@@ -5,7 +5,7 @@ class Hangman
   def initialize
     @secret_word = generate_word
     @transformed_word = transform_word
-    @mistakes = @secret_word.length + 2
+    @mistakes_left = @secret_word.length + 2
     @wrong_guesses = []
   end
 
@@ -15,7 +15,7 @@ class Hangman
 
       HOW TO PLAY:
       Computer has randomly chosen a secret word that is #{@secret_word.length} letters long.
-      You are allowed #{@mistakes} mistakes before you lose.
+      You are allowed #{@mistakes_left} mistakes before you lose.
       To guess a letter, type the letter and press enter.
 
       Good luck!
@@ -24,12 +24,12 @@ class Hangman
 
   def play
     display_rules
-    until @mistakes.zero?
+    until @mistakes_left.zero?
       check_letter_guess(enter_letter)
       break if @transformed_word == @secret_word
 
       puts "Wrong guessed letters: #{@wrong_guesses.join(', ')}" unless @wrong_guesses.empty?
-      puts "Mistakes left: #{@mistakes}"
+      puts "Mistakes left: #{@mistakes_left}"
     end
     puts 'Game over!'
     determine_game_result
@@ -67,7 +67,7 @@ class Hangman
       update_word(guess)
     else
       puts "\nIncorrect!"
-      @mistakes -= 1
+      @mistakes_left -= 1
       @wrong_guesses.push(guess)
 
     end
@@ -80,7 +80,7 @@ class Hangman
   end
 
   def determine_game_result
-    if @mistakes.zero?
+    if @mistakes_left.zero?
       puts 'YOU LOST...'
     else
       puts 'YOU WON!'
