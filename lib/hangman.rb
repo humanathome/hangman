@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
+require_relative 'saveable'
+
 # main game class
 class Hangman
+  include Saveable
+
   def initialize
     @secret_word = generate_word
     @transformed_word = transform_word
@@ -16,24 +20,17 @@ class Hangman
       HOW TO PLAY:
       Computer has randomly chosen a secret word that is #{@secret_word.length} letters long.
       You are allowed #{@mistakes_left} mistakes before you lose.
-      To guess a letter, type the letter and press enter.
-
+      You can guess a letter, an entire word, or enter a game command.
+      To save the game at any time, type '!save' without the quotes and press enter.
       Good luck!
     RULES
   end
 
   def play
     display_rules
-    until @mistakes_left.zero?
-      check_letter_guess(enter_letter)
-      break if @transformed_word == @secret_word
-
-      puts "Wrong guessed letters: #{@wrong_guesses.join(', ')}" unless @wrong_guesses.empty?
-      puts "Mistakes left: #{@mistakes_left}"
-    end
-    puts 'Game over!'
-    determine_game_result
-    puts "The word was #{@secret_word.upcase}."
+    puts "\nSecret word: *** #{@transformed_word} ***"
+    start_game_rounds
+    determine_game_ending
   end
 
   private
@@ -53,23 +50,36 @@ class Hangman
     @secret_word.split('').map { |_letter| '_' }.join
   end
 
+  def start_game_rounds
+    until @mistakes_left.zero?
+      guess = enter_letter
+      break if save_game?(guess)
+
+      check_letter_guess(guess)
+      break if word_guessed?
+
+      puts "Secret word: *** #{@transformed_word} ***\n\n"
+      puts "Wrong guesses: #{@wrong_guesses.join(', ')}" unless @wrong_guesses.empty?
+      puts "Mistakes left: #{@mistakes_left}"
+    end
+  end
+
   def enter_letter
-    puts "\nPlease enter a single letter:"
-    puts @transformed_word
-    letter = gets.chomp
-    enter_letter unless letter.downcase.match?(/[a-z]/) && letter.length == 1
-    letter.downcase
+    puts "\n__________________________________________"
+    puts 'Enter a letter, word, or a command:'
+    gets.chomp.downcase
   end
 
   def check_letter_guess(guess)
-    if @secret_word.include?(guess)
-      puts "\nCorrect!"
+    if guess == @secret_word
+      @transformed_word = @secret_word
+    elsif @secret_word.include?(guess)
       update_word(guess)
+      puts "\nCorrect!\n"
     else
-      puts "\nIncorrect!"
+      puts "\nIncorrect!\n"
       @mistakes_left -= 1
       @wrong_guesses.push(guess)
-
     end
   end
 
@@ -79,11 +89,22 @@ class Hangman
     end
   end
 
-  def determine_game_result
+  def word_guessed?
+    @transformed_word == @secret_word
+  end
+
+  def save_game?(guess)
+    return unless guess == '!save'
+
+    save_game
+    true
+  end
+
+  def determine_game_ending
     if @mistakes_left.zero?
-      puts 'YOU LOST...'
-    else
-      puts 'YOU WON!'
+      puts "YOU LOST... The secret word was '#{@secret_word.upcase}'."
+    elsif @transformed_word == @secret_word
+      puts "YOU WON! The secret word was '#{@secret_word.upcase}'."
     end
   end
 end
