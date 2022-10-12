@@ -6,10 +6,12 @@ Project link: [Hangman](https://www.theodinproject.com/lessons/ruby-hangman)
 Simple command line Hangman game where one player can play against the computer.
 
 ### Features
-- The computer chooses a random word from a text file
-- Player has double the number of guesses as the length of the word
-- Player can guess a letter or the entire word
-- Player can save the game and load it later
+- Computer chooses a random word between 5 and 12 letters long from a text file
+- Number of guesses that player has is based on the length of the word + 2 
+(e.g. if the word is 5 letters long, the player has 7 guesses)
+- Player can guess a letter or the entire word at once
+- Player can type a command to save the game at player's turn
+- Player can load a saved game at the beginning of the game
 - Player can choose to play again after the game is over
  
 ### Built with
@@ -31,6 +33,6 @@ cd hangman
 
 - run
 ```
-ruby hangman.rb
+ruby lib/hangman.rb
 ```
 
