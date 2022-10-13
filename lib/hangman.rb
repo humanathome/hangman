@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 require_relative 'saveable'
+require_relative 'loadable'
 
 # main game class
 class Hangman
   include Saveable
+  include Loadable
 
   def initialize
     @secret_word = generate_word
@@ -28,12 +30,17 @@ class Hangman
 
   def play
     display_rules
-    puts "\nSecret word: *** #{@transformed_word} ***"
+    choose_game_mode
     start_game_rounds
     determine_game_ending
   end
 
   private
+
+  def choose_game_mode
+    puts 'Would you like to load a saved game? (y/n)'
+    load_game if gets.chomp.downcase == 'y'
+  end
 
   def generate_word
     dictionary = File.open('./google-10000-english-no-swears.txt')
@@ -51,6 +58,7 @@ class Hangman
   end
 
   def start_game_rounds
+    puts "Secret word: *** #{@transformed_word} ***"
     until @mistakes_left.zero?
       guess = enter_letter
       break if save_game?(guess)
