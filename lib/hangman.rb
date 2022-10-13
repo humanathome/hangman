@@ -93,8 +93,8 @@ class Hangman
     @transformed_word == @secret_word
   end
 
-  def save_game?(guess)
-    return unless guess == '!save'
+  def save_game?(player_input)
+    return unless player_input == '!save'
 
     save_game
     true
