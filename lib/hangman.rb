@@ -73,7 +73,7 @@ class Hangman
   def check_letter_guess(guess)
     if guess == @secret_word
       @transformed_word = @secret_word
-    elsif @secret_word.include?(guess)
+    elsif guess.length == 1 && @secret_word.include?(guess)
       update_word(guess)
       puts "\nCorrect!\n"
     else
