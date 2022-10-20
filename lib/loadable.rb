@@ -2,31 +2,39 @@
 
 # show, find and load saved game files
 module Loadable
+  attr_reader :all_saved_games, :loaded_game_name
+
   def show_saved_games
-    puts 'Saved games:'
-    Dir.children('./saved_games').each_with_index do |filename, index|
-      puts "#{index + 1}. #{filename}"
-    end
+    @all_saved_games = saved_games_list_to_hash
+    puts "\nYou have #{@all_saved_games.length} saved games:"
+    @all_saved_games.each { |key, value| puts "#{key}. #{value}" }
   end
 
   def find_saved_game_file
-    puts 'Enter the number of the saved game you would like to load:'
+    puts "\nEnter the number of the saved game you would like to load:\n"
     game_number = gets.chomp.to_i
-    all_saved_games = Dir.children('./saved_games')
-    unless game_number.between?(1, all_saved_games.length)
-      puts 'Invalid game number.'
-      find_saved_game_file
-    end
-    all_saved_games[game_number - 1]
+    @loaded_game_name = @all_saved_games[game_number]
+    return unless @loaded_game_name.nil?
+
+    puts 'Invalid game number. Please try again.'
+    find_saved_game_file
   end
 
   def load_game
     show_saved_games
-    load_file_values
+    find_saved_game_file
+    load_file_values(@loaded_game_name)
+    puts "Game '#{@loaded_game_name}' loaded!"
   end
 
-  def load_file_values
-    chosen_game_file = YAML.load_file("./saved_games/#{find_saved_game_file}")
+  def saved_games_list_to_hash
+    saved_games_list = Dir.children('./saved_games')
+    game_numbers = (1..saved_games_list.length).to_a
+    game_numbers.zip(saved_games_list).to_h
+  end
+
+  def load_file_values(game_file)
+    chosen_game_file = YAML.load_file("./saved_games/#{game_file}")
     @secret_word = chosen_game_file['secret_word']
     @transformed_word = chosen_game_file['transformed_word']
     @mistakes_left = chosen_game_file['mistakes_left']

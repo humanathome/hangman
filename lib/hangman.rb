@@ -5,13 +5,12 @@ require_relative 'loadable'
 
 # main game class
 class Hangman
+  attr_reader :secret_word, :transformed_word, :mistakes_left
+
   include Saveable
   include Loadable
 
   def initialize
-    @secret_word = generate_word
-    @transformed_word = transform_word
-    @mistakes_left = @secret_word.length + 2
     @wrong_guesses = []
   end
 
@@ -20,11 +19,12 @@ class Hangman
       Welcome to Hangman!
 
       HOW TO PLAY:
-      Computer has randomly chosen a secret word that is #{@secret_word.length} letters long.
-      You are allowed #{@mistakes_left} mistakes before you lose.
+      Computer will randomly chosen a secret word that is between 5 and 12 letters long.
+      You are allowed certain number of mistakes before you lose (length of the secret word + 2).
       You can guess a letter, an entire word, or enter a game command.
       To save the game at any time, type '!save' without the quotes and press enter.
       Good luck!
+
     RULES
   end
 
@@ -39,7 +39,16 @@ class Hangman
 
   def choose_game_mode
     puts 'Would you like to load a saved game? (y/n)'
-    load_game if gets.chomp.downcase == 'y'
+    gets.chomp.downcase.squeeze == 'y' ? load_game : new_game
+  end
+
+  def new_game
+    @secret_word = generate_word
+    @transformed_word = transform_word
+    @mistakes_left = @secret_word.length + 2
+    @wrong_guesses = []
+    puts "\nNew game started!"
+    puts "Secret word is #{@secret_word.length} letters long. You have #{@mistakes_left} mistakes left."
   end
 
   def generate_word
@@ -58,17 +67,15 @@ class Hangman
   end
 
   def start_game_rounds
-    puts "Secret word: *** #{@transformed_word} ***"
     until @mistakes_left.zero?
+      puts "\nSecret word: *** #{@transformed_word} ***"
+      puts "Wrong guesses: #{@wrong_guesses.join(', ')}" unless @wrong_guesses.empty?
+      puts "Mistakes left: #{@mistakes_left}"
       guess = enter_letter
       break if save_game?(guess)
 
       check_letter_guess(guess)
       break if word_guessed?
-
-      puts "Secret word: *** #{@transformed_word} ***\n\n"
-      puts "Wrong guesses: #{@wrong_guesses.join(', ')}" unless @wrong_guesses.empty?
-      puts "Mistakes left: #{@mistakes_left}"
     end
   end
 

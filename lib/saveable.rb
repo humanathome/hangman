@@ -6,7 +6,7 @@ require 'yaml'
 module Saveable
   def save_game
     Dir.mkdir('./saved_games') unless Dir.exist?('./saved_games')
-    filename = generate_random_filename
+    filename = @loaded_game_name || generate_random_filename
     IO.write("./saved_games/#{filename}", instance_variables_to_yaml)
     puts "Game saved as '#{filename}'. See you later!"
   end
