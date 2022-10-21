@@ -82,7 +82,14 @@ class Hangman
   def enter_letter
     puts "\n__________________________________________"
     puts 'Enter a letter, word, or a command:'
-    gets.chomp.downcase
+    guess = gets.chomp.downcase
+
+    if @wrong_guesses.include?(guess) || @transformed_word.include?(guess)
+      puts "You already guessed '#{guess}'. Try again."
+      enter_letter
+    else
+      guess
+    end
   end
 
   def check_letter_guess(guess)
