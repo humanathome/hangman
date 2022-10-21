@@ -121,6 +121,7 @@ class Hangman
     elsif @transformed_word == @secret_word
       puts "YOU WON! The secret word was '#{@secret_word.upcase}'."
     end
+    delete_saved_game if loaded_game_solved_or_lost?
   end
 end
 

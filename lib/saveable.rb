@@ -20,6 +20,13 @@ module Saveable
     )
   end
 
+  def delete_saved_game
+    return unless @loaded_game_name
+
+    File.delete("./saved_games/#{@loaded_game_name}")
+    puts "Game '#{@loaded_game_name}' removed from saved games directory."
+  end
+
   def generate_random_filename
     adjectives = %w[adorable beautiful clean drab elegant fancy plain]
     colors = %w[red orange yellow green blue indigo violet]
