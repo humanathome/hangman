@@ -72,7 +72,7 @@ class Hangman
       break if save_game?(guess)
 
       check_letter_guess(guess)
-      break if word_guessed?
+      break if @transformed_word == @secret_word
     end
   end
 
@@ -110,10 +110,6 @@ class Hangman
     @secret_word.split('').each_with_index do |letter, index|
       @transformed_word[index] = letter if letter == guess
     end
-  end
-
-  def word_guessed?
-    @transformed_word == @secret_word
   end
 
   def save_game?(player_input)
