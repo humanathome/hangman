@@ -54,10 +54,7 @@ class Hangman
   def generate_word
     dictionary = File.open('./google-10000-english-no-swears.txt')
     words_array = []
-    dictionary.each_line do |word|
-      word = word.chomp
-      words_array.push(word) if word.length.between?(5, 12)
-    end
+    dictionary.each_line { |word| words_array.push(word.chomp) if word.length.between?(5, 12) }
     dictionary.close
     words_array.sample
   end
