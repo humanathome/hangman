@@ -43,15 +43,15 @@ class Hangman
   end
 
   def new_game
-    @secret_word = generate_word
-    @transformed_word = transform_word
+    @secret_word = generate_random_word
+    @transformed_word = transform_secret_word
     @mistakes_left = @secret_word.length + 2
     @wrong_guesses = []
     puts "\nNew game started!"
     puts "Secret word is #{@secret_word.length} letters long. You have #{@mistakes_left} mistakes left."
   end
 
-  def generate_word
+  def generate_random_word
     dictionary = File.open('./google-10000-english-no-swears.txt')
     words_array = []
     dictionary.each_line { |word| words_array.push(word.chomp) if word.length.between?(5, 12) }
@@ -59,7 +59,7 @@ class Hangman
     words_array.sample
   end
 
-  def transform_word
+  def transform_secret_word
     @secret_word.split('').map { |_letter| '_' }.join
   end
 
@@ -71,7 +71,7 @@ class Hangman
       @player_guess = enter_letter
       break if @player_guess == '!save'
 
-      check_letter_guess
+      check_player_guess
       break if @transformed_word == @secret_word
     end
   end
@@ -93,11 +93,11 @@ class Hangman
     guess.match?(/\s+/) || @wrong_guesses.include?(guess) || @transformed_word.include?(guess)
   end
 
-  def check_letter_guess
+  def check_player_guess
     if @player_guess == @secret_word
       @transformed_word = @secret_word
     elsif @player_guess.length == 1 && @secret_word.include?(@player_guess)
-      update_word
+      update_transformed_word
       puts "\nCorrect!\n"
     else
       puts "\nIncorrect!\n"
@@ -106,7 +106,7 @@ class Hangman
     end
   end
 
-  def update_word
+  def update_transformed_word
     @secret_word.split('').each_with_index do |letter, index|
       @transformed_word[index] = letter if letter == @player_guess
     end
