@@ -2,6 +2,7 @@
 
 require_relative 'saveable'
 require_relative 'loadable'
+require_relative 'displayable'
 
 # main game class
 class Hangman
@@ -9,23 +10,10 @@ class Hangman
 
   include Saveable
   include Loadable
+  include Displayable
 
   def initialize
     @wrong_guesses = []
-  end
-
-  def display_rules
-    puts <<~RULES
-      Welcome to Hangman!
-
-      HOW TO PLAY:
-      Computer will randomly chosen a secret word that is between 5 and 12 letters long.
-      You are allowed certain number of mistakes before you lose (length of the secret word + 2).
-      You can guess a letter, an entire word, or enter a game command.
-      To save the game at any time, type '!save' without the quotes and press enter.
-      Good luck!
-
-    RULES
   end
 
   def play
@@ -47,8 +35,7 @@ class Hangman
     @transformed_word = transform_secret_word
     @mistakes_left = @secret_word.length + 2
     @wrong_guesses = []
-    puts "\nNew game started!"
-    puts "Secret word is #{@secret_word.length} letters long. You have #{@mistakes_left} mistakes left."
+    display_new_game_message
   end
 
   def generate_random_word
@@ -65,9 +52,7 @@ class Hangman
 
   def start_game_rounds
     until @mistakes_left.zero?
-      puts "\nSecret word: *** #{@transformed_word} ***"
-      puts "Wrong guesses: #{@wrong_guesses.join(', ')}" unless @wrong_guesses.empty?
-      puts "Mistakes left: #{@mistakes_left}"
+      display_round_results
       @player_guess = enter_letter
       break if @player_guess == '!save'
 
@@ -77,8 +62,7 @@ class Hangman
   end
 
   def enter_letter
-    puts "\n__________________________________________"
-    puts 'Enter a letter, word, or a command:'
+    display_player_input_prompt
     player_input = gets.chomp.downcase
 
     if invalid_guess?(player_input)
@@ -114,9 +98,9 @@ class Hangman
 
   def determine_game_ending
     if @mistakes_left.zero?
-      puts "YOU LOST... The secret word was '#{@secret_word.upcase}'."
+      display_loss
     elsif @transformed_word == @secret_word
-      puts "YOU WON! The secret word was '#{@secret_word.upcase}'."
+      display_win
     end
     save_game if @player_guess == '!save'
     delete_saved_game if loaded_game_solved_or_lost?
