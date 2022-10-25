@@ -5,7 +5,7 @@ require_relative 'loadable'
 
 # main game class
 class Hangman
-  attr_reader :secret_word, :transformed_word, :mistakes_left
+  attr_reader :secret_word, :transformed_word, :mistakes_left, :player_guess
 
   include Saveable
   include Loadable
@@ -68,10 +68,10 @@ class Hangman
       puts "\nSecret word: *** #{@transformed_word} ***"
       puts "Wrong guesses: #{@wrong_guesses.join(', ')}" unless @wrong_guesses.empty?
       puts "Mistakes left: #{@mistakes_left}"
-      guess = enter_letter
-      break if save_game?(guess)
+      @player_guess = enter_letter
+      break if @player_guess == '!save'
 
-      check_letter_guess(guess)
+      check_letter_guess
       break if @transformed_word == @secret_word
     end
   end
@@ -79,13 +79,13 @@ class Hangman
   def enter_letter
     puts "\n__________________________________________"
     puts 'Enter a letter, word, or a command:'
-    guess = gets.chomp.downcase
+    player_input = gets.chomp.downcase
 
-    if invalid_guess?(guess)
+    if invalid_guess?(player_input)
       puts 'Your guess is not valid or you\'ve already guessed it. Try again.'
       enter_letter
     else
-      guess
+      player_input
     end
   end
 
@@ -93,30 +93,23 @@ class Hangman
     guess.match?(/\s+/) || @wrong_guesses.include?(guess) || @transformed_word.include?(guess)
   end
 
-  def check_letter_guess(guess)
-    if guess == @secret_word
+  def check_letter_guess
+    if @player_guess == @secret_word
       @transformed_word = @secret_word
-    elsif guess.length == 1 && @secret_word.include?(guess)
-      update_word(guess)
+    elsif @player_guess.length == 1 && @secret_word.include?(@player_guess)
+      update_word
       puts "\nCorrect!\n"
     else
       puts "\nIncorrect!\n"
       @mistakes_left -= 1
-      @wrong_guesses.push(guess)
+      @wrong_guesses.push(@player_guess)
     end
   end
 
-  def update_word(guess)
+  def update_word
     @secret_word.split('').each_with_index do |letter, index|
-      @transformed_word[index] = letter if letter == guess
+      @transformed_word[index] = letter if letter == @player_guess
     end
-  end
-
-  def save_game?(player_input)
-    return unless player_input == '!save'
-
-    save_game
-    true
   end
 
   def determine_game_ending
@@ -125,6 +118,7 @@ class Hangman
     elsif @transformed_word == @secret_word
       puts "YOU WON! The secret word was '#{@secret_word.upcase}'."
     end
+    save_game if @player_guess == '!save'
     delete_saved_game if loaded_game_solved_or_lost?
   end
 end
