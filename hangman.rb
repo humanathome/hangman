@@ -112,6 +112,12 @@ class Hangman
     end
     save_game if @player_guess == '!save'
     delete_saved_game if loaded_game_solved_or_lost?
+    play if play_again?
+  end
+
+  def play_again?
+    puts 'Would you like to play again? (y/n)'
+    gets.chomp.downcase.squeeze == 'y'
   end
 end
 
