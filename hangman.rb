@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'saveable'
-require_relative 'loadable'
-require_relative 'displayable'
+require_relative 'lib/displayable'
+require_relative 'lib/saveable'
+require_relative 'lib/loadable'
 
 # main game class
 class Hangman
