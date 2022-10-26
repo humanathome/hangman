@@ -98,6 +98,12 @@ class Hangman
     end
   end
 
+  def loaded_game_solved_or_lost?
+    return if @loaded_game_name.nil?
+
+    @transformed_word == @secret_word || @mistakes_left.zero?
+  end
+
   def determine_game_ending
     if @mistakes_left.zero?
       display_loss

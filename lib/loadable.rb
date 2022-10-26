@@ -36,10 +36,4 @@ module Loadable
     @mistakes_left = chosen_game_file['mistakes_left']
     @wrong_guesses = chosen_game_file['wrong_guesses']
   end
-
-  def loaded_game_solved_or_lost?
-    return if @loaded_game_name.nil?
-
-    @transformed_word == @secret_word || @mistakes_left.zero?
-  end
 end
