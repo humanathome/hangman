@@ -2,6 +2,8 @@
 
 # show, find and load saved game files
 module Loadable
+  private
+
   attr_reader :all_saved_games, :loaded_game_name
 
   def find_saved_game_file

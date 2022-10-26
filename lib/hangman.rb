@@ -6,13 +6,15 @@ require_relative 'displayable'
 
 # main game class
 class Hangman
-  attr_reader :secret_word, :transformed_word, :mistakes_left, :player_guess
-
   include Saveable
   include Loadable
   include Displayable
 
   def initialize
+    @secret_word = ''
+    @transformed_word = ''
+    @mistakes_left = 0
+    @player_guess = ''
     @wrong_guesses = []
   end
 

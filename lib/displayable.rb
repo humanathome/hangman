@@ -2,6 +2,8 @@
 
 # contains methods for displaying textual info
 module Displayable
+  private
+
   def display_rules
     puts <<~RULES
       Welcome to Hangman!

@@ -4,6 +4,8 @@ require 'yaml'
 
 # save the game by saving the state of instance variables to a file
 module Saveable
+  private
+
   def save_game
     Dir.mkdir('./saved_games') unless Dir.exist?('./saved_games')
     filename = @loaded_game_name || generate_random_filename
