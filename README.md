@@ -21,6 +21,9 @@ long
 ### Built with
 - ruby 3.0.0 (managed by `asdf` in [.tool-versions](.tool-versions))
 
+### Run online
+[![Run on Repl.it](https://repl.it/badge/github/humanathome/hangman)](https://repl.it/@humanathome/hangman)
+
 ### Run locally
 
 Prerequisites: ruby >= 3.0.0
