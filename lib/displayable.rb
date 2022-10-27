@@ -9,7 +9,7 @@ module Displayable
       Welcome to Hangman!
 
       HOW TO PLAY:
-      Computer will randomly chosen a secret word that is between 5 and 12 letters long.
+      Computer will randomly chose a secret word that is between 5 and 12 letters long.
       You are allowed certain number of mistakes before you lose (length of the secret word + 2).
       You can guess a letter, an entire word, or enter a game command.
       To save the game at any time, type '!save' without the quotes and press enter.
